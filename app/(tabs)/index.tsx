@@ -1,50 +1,135 @@
-import { Text, View, Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
+import {
+  Text,
+  View,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+} from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
 import "../globals.css";
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Link } from 'expo-router';
-import { images } from '@/constants/images';
-import SearchBar from '@/components/SearchBar';
-import { icons } from '@/constants/icons';
+import { images } from "@/constants/images";
+import { icons } from "@/constants/icons";
+import SearchBar from "@/components/SearchBar";
+import useFetch from "@/services/useFetch";
+import {
+  fetchActionMovies,
+  fetchDramaMovies,
+  fetchLatestMovies,
+  fetchPopularMovies,
+  fetchRomanceMovies,
+  searchMovies, // you can add fetchLatestMovies etc.
+} from "@/services/api";
+import MovieCard from "@/components/MovieCard";
 
-const categories = ['All', 'Popular', 'Action', 'Drama', 'Romance'];
+// tabs
+const categories = ["Latest", "Popular", "Action", "Drama", "Romance"];
+
+// Category Tabs component
+const Categories = ({ selected, setSelected }: any) => {
+  return (
+    <View className="flex-row justify-center items-center flex-wrap">
+      {categories.map((item) => (
+        <TouchableOpacity
+          key={item}
+          onPress={() => setSelected(item)}
+          style={[
+            styles.categoryButton,
+            selected === item && styles.selectedCategory,
+          ]}
+        >
+          <Text
+            style={[
+              styles.categoryText,
+              selected === item && styles.selectedText,
+            ]}
+          >
+            {item}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+};
 
 const Index = () => {
-  const [selected, setSelected] = useState('All');
+  const [selected, setSelected] = useState("Latest");
+
+  // Return appropriate fetch function
+  const getFetchFunction = useCallback(() => {
+    switch (selected) {
+      case "Popular":
+        return fetchPopularMovies;
+      case "Latest":
+        return fetchLatestMovies;
+      case "Action":
+        return fetchActionMovies;
+      case "Drama":
+        return fetchDramaMovies;
+      case "Romance":
+        return fetchRomanceMovies;
+      default:
+        return fetchPopularMovies;
+    }
+  }, [selected]);
+
+  const {
+    data: movies,
+    loading: movieLoading,
+    error: movieError,
+    refetch,
+  } = useFetch(getFetchFunction(), true);
+
+  useEffect(() => {
+    refetch(); // refetch when category changes
+  }, [selected]);
 
   return (
     <View className="flex-1 bg-zinc-900">
-      <Image source={images.bg} className="absolute" />
+      <Image source={images.bg} className="absolute w-full h-full" />
+
       <ScrollView
         className="flex-1 px-5"
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ minHeight: '100%', paddingBottom: 10 }}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 20 }}
       >
-        <Image source={icons.logo2} className="w-auto h-auto mt-20 mb-5 mx-auto" />
-        <View className="flex-1 mt-5">
-          <SearchBar placeholder="Search for a movie" />
-          <View className="flex-row justify-center items-center flex-wrap">
-            {categories.map((item) => (
-              <TouchableOpacity
-                key={item}
-                onPress={() => setSelected(item)}
-                style={[
-                  styles.categoryButton,
-                  selected === item && styles.selectedCategory,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.categoryText,
-                    selected === item && styles.selectedText,
-                  ]}
-                >
-                  {item}
-                </Text>
-              </TouchableOpacity>
-            ))}
+        <Image
+          source={icons.logo2}
+          className="w-auto h-auto mt-20 mb-5 mx-auto"
+        />
+
+        {movieLoading ? (
+          <ActivityIndicator size="large" color="#00f" className="mt-10" />
+        ) : movieError ? (
+          <Text className="text-red-500 text-center">Error: {movieError}</Text>
+        ) : (
+          <View className="flex-1 mt-5">
+            <SearchBar placeholder="Search for a movie" />
+
+            <Categories selected={selected} setSelected={setSelected} />
+
+            <Text className="text-white font-bold text-lg m-5">
+              {selected} Movies
+            </Text>
+
+            <FlatList
+              data={movies}
+              keyExtractor={(item) => item.id?.toString()}
+              scrollEnabled={false}
+              numColumns={3}
+              renderItem={({ item }) => <MovieCard movie={item} />}
+              columnWrapperStyle={{
+                justifyContent: "flex-start",
+                gap: 20,
+                paddingRight: 5,
+                marginBottom: 10,
+              }}
+              className="mt-2 pb-32"
+            />
           </View>
-        </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -55,22 +140,22 @@ export default Index;
 const styles = StyleSheet.create({
   categoryButton: {
     borderWidth: 1,
-    borderColor: '#AAA',
+    borderColor: "#AAA",
     borderRadius: 20,
-    margin: 5,
+    margin: 3,
     paddingHorizontal: 8,
     paddingVertical: 5,
   },
   selectedCategory: {
-    backgroundColor: '#fff',
-    borderColor: '#fff',
+    backgroundColor: "#fff",
+    borderColor: "#fff",
   },
   categoryText: {
-    color: '#999',
+    color: "#999",
     fontSize: 14,
   },
   selectedText: {
-    color: '#000',
-    fontWeight: 'bold',
+    color: "#000",
+    fontWeight: "bold",
   },
 });
