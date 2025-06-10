@@ -1,9 +1,7 @@
 import {
-  StyleSheet,
   Text,
   View,
   Image,
-  Dimensions,
   TouchableOpacity,
 } from "react-native";
 import React from "react";
@@ -32,7 +30,6 @@ const MovieCard = ({ movie }: Props) => {
         <View className="flex-row items-center justify-start gap-x-1">
             <Image source={icons.star} className="size-4" />
             <Text className="text-xs text-white font-bold uppercase">{Math.round(movie.vote_average/2)}</Text>
-            
         </View>
         <Text className="text-xs font-medium justify-end" style={{color: '#777'}}>{movie.release_date?.split('-')[0]}</Text>
             {/* <Text className="text-xs text-white font-medium uppercase">Movie</Text> */}
