@@ -58,7 +58,7 @@ const search = () => {
           <>
             <Image
               source={icons.logo2}
-              className="w-auto h-auto mt-20 mb-10 mx-auto"
+              className="w-auto h-auto mt-20 mb-5 mx-auto"
             />
 
             <SearchBar

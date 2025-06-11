@@ -109,17 +109,17 @@ const Index = () => {
           className="w-auto h-auto mt-20 mb-5 mx-auto"
         />
 
-        {movieLoading || trendingLoading ? (
-          <ActivityIndicator size="large" color="#00f" className="mt-10" />
-        ) : movieError || trendingError ? (
-          <Text className="text-red-500 text-center">
-            Error: {movieError || trendingError}
-          </Text>
-        ) : (
-          <View className="flex-1 mt-5">
-            <SearchBar placeholder="Search for a movie" value="" />
+        <View className="flex-1">
+          <SearchBar placeholder="Search for a movie" value="" />
 
-            {trendngMovies && (
+          {trendingLoading ? (
+            <ActivityIndicator size="large" color="#00f" className="mt-10" />
+          ) : trendingError ? (
+            <Text className="text-red-500 text-center">
+              Error: {movieError || trendingError}
+            </Text>
+          ) : (
+            trendngMovies && (
               <View className="mt-10">
                 <Text className="text-white font-bold text-lg mb-3">
                   Trending Movies
@@ -127,17 +127,33 @@ const Index = () => {
                 <FlatList
                   data={trendngMovies}
                   keyExtractor={(items) => items.id?.toString()}
-                  renderItem={({item, index}) => <TrendingCard movie={item} index={index} />}
+                  renderItem={({ item, index }) => (
+                    <TrendingCard movie={item} index={index} />
+                  )}
                   horizontal
-                  className="mb-4 mt-3"
-                  ItemSeparatorComponent={() => <View className="w-4"/>}
+                  className="mb-10 mt-3"
+                  ItemSeparatorComponent={() => <View className="w-4" />}
                 />
               </View>
-            )}
+            )
+          )}
 
-            <Categories selected={selected} setSelected={setSelected} />
+          <Categories
+            className="mb-10"
+            selected={selected}
+            setSelected={setSelected}
+          />
+        </View>
 
-            <Text className="text-white font-bold text-lg m-5">
+        {movieLoading ? (
+          <ActivityIndicator size="large" color="#00f" className="mt-10" />
+        ) : movieError ? (
+          <Text className="text-red-500 text-center">
+            Error: {movieError || trendingError}
+          </Text>
+        ) : (
+          <View className="flex-1 mt-5">
+            <Text className="text-white font-bold text-lg mb-3">
               {selected} Movies
             </Text>
 
