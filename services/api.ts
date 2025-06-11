@@ -101,3 +101,18 @@ export const loadTrending = async () => {
     return [];
   }
 }
+
+// Fetch movie details
+export const fetchMovieDetails = async (movieId: string) : Promise<MovieDetails> => {
+  try{
+    const response = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`)
+    const data = await response.json()
+
+    if(!response.ok) throw new Error(data.status_message || "Unable to fetch details of movie" )
+    
+      return data;
+  }catch(error){
+    console.log(error)
+    throw error;
+  }
+}
