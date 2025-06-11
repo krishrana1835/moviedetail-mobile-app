@@ -116,3 +116,18 @@ export const fetchMovieDetails = async (movieId: string) : Promise<MovieDetails>
     throw error;
   }
 }
+
+// Fetch Movie trailers
+export const fetchMovieTrailers = async (movieId: string) => {
+  try{
+    const response = await fetch(`${BASE_URL}/movie/${movieId}/videos?api_key=${API_KEY}`)
+    const data = await response.json()
+
+    if(!response.ok) throw new Error(data.status_message || "Unable to fetch details of movie" )
+    
+      return data.results;
+  }catch(error){
+    console.log(error)
+    throw error;
+  }
+}

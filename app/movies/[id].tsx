@@ -1,9 +1,17 @@
-import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Linking,
+} from "react-native";
 import React from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import useFetch from "@/services/useFetch";
 import search from "../(tabs)/search";
-import { fetchMovieDetails } from "@/services/api";
+import { fetchMovieDetails, fetchMovieTrailers } from "@/services/api";
 import { icons } from "@/constants/icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "@/constants/images";
@@ -33,6 +41,15 @@ const MovieDetails = () => {
   const { data: movie, loading } = useFetch(
     () => fetchMovieDetails(id.toString()),
     true
+  );
+
+  const { data: movieTrailers } = useFetch(
+    () => fetchMovieTrailers(id.toString()),
+    true
+  );
+
+  const trailer = movieTrailers?.find(
+    (video: any) => video.type === "Trailer" && video.site === "YouTube"
   );
 
   return (
@@ -74,7 +91,24 @@ const MovieDetails = () => {
                 ({movie.vote_count} people)
               </Text>
             </View>
-            <MovieInfo label="Overview" value={movie.overview} />
+
+            {trailer && (
+              <TouchableOpacity
+                className="w-full mt-5 bg-blue-950 rounded-lg py-3.5 flex flex-row items-center justify-center"
+                onPress={() =>
+                  Linking.openURL(
+                    `https://www.youtube.com/watch?v=${trailer.key}`
+                  )
+                }
+              >
+                <Image source={icons.trailer} className="size-5 mr-3" />
+                <Text className="text-white font-bold opacity-100">
+                  Watch Trailer
+                </Text>
+              </TouchableOpacity>
+            )}
+
+            <MovieInfo label="Over+view" value={movie.overview} />
             <MovieInfo
               label="Genres"
               value={movie.genres.map((g) => g.name).join("-") || "N/A"}
@@ -89,13 +123,25 @@ const MovieDetails = () => {
                 value={`$${movie.revenue / 1_000_000} milion`}
               />
             </View>
-            <MovieInfo label="Production Companies" value={movie.production_companies.map((c) => c.name).join('-') || 'N/A'} />
+            <MovieInfo
+              label="Production Companies"
+              value={
+                movie.production_companies.map((c) => c.name).join("-") || "N/A"
+              }
+            />
           </View>
         </ScrollView>
       )}
-      <TouchableOpacity className="absolute bottom-5 left-0 right-0 mx-5 bg-blue-900 rounded-lg py-3.5 flex flex-row items-center justify-center z-50" onPress={router.back}>
-         <Image source={icons.arrow} className="size-5 mr-1 mt-0.5 rotate-180" tintColor='#fff'/>
-         <Text className="text-white font-semibold text-base">Go Back</Text>
+      <TouchableOpacity
+        className="absolute bottom-5 left-0 right-0 mx-5 bg-blue-900 rounded-lg py-3.5 flex flex-row items-center justify-center z-50"
+        onPress={router.back}
+      >
+        <Image
+          source={icons.arrow}
+          className="size-5 mr-1 mt-0.5 rotate-180"
+          tintColor="#fff"
+        />
+        <Text className="text-white font-semibold text-base">Go Back</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
