@@ -10,7 +10,7 @@ const SearchBar = ({placeholder, onPress, value, onChangeText}: any) => {
     <View className="flex-row items-center bg-dark-200 rounded-full px-5 py-4">
       <Image
         source={icons.search}
-        className="w-5 h-5"
+        className="w-7 h-7"
         resizeMode="contain"
         tintColor="white"
       />
@@ -19,7 +19,7 @@ const SearchBar = ({placeholder, onPress, value, onChangeText}: any) => {
         value={value}
         onChangeText={onChangeText}
         placeholderTextColor="#888"
-        className="flex-1 ml-2 text-white rounded-full border border-gray-400 pl-5"
+        className="flex-1 ml-2 text-white rounded-full border border-gray-400 pl-5 bg-blue-950"
         onFocus={() => router.push('/search')}
       />
     </View>
