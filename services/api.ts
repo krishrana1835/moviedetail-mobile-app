@@ -76,8 +76,7 @@ export const searchMovies = async ({ query }: searchQuery) => {
     const response = await fetch(url);
     const data = await response.json();
 
-    if (!response.ok)
-      throw new Error(data.status_message || "Search failed");
+    if (!response.ok) throw new Error(data.status_message || "Search failed");
 
     return data.results;
   } catch (error) {
@@ -85,3 +84,20 @@ export const searchMovies = async ({ query }: searchQuery) => {
     return [];
   }
 };
+
+// Daily Trending
+export const loadTrending = async () => {
+  const url = `${BASE_URL}/trending/movie/day?api_key=${API_KEY}`
+
+  try{
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if(!response.ok) throw new Error(data.status_message || "Traedning Movies Loading Faild")
+
+    return data.results.slice(0,8);
+  }catch(error){
+    console.error("error loading movies", error)
+    return [];
+  }
+}

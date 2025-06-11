@@ -20,9 +20,12 @@ import {
   fetchLatestMovies,
   fetchPopularMovies,
   fetchRomanceMovies,
+  loadTrending,
   searchMovies, // you can add fetchLatestMovies etc.
 } from "@/services/api";
 import MovieCard from "@/components/MovieCard";
+import TrendingCard from "@/components/TrendingCard";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // tabs
 const categories = ["Latest", "Popular", "Action", "Drama", "Romance"];
@@ -76,6 +79,12 @@ const Index = () => {
   }, [selected]);
 
   const {
+    data: trendngMovies,
+    loading: trendingLoading,
+    error: trendingError,
+  } = useFetch(loadTrending, true);
+
+  const {
     data: movies,
     loading: movieLoading,
     error: movieError,
@@ -83,11 +92,11 @@ const Index = () => {
   } = useFetch(getFetchFunction(), true);
 
   useEffect(() => {
-    refetch(); // refetch when category changes
+    refetch();
   }, [selected]);
 
   return (
-    <View className="flex-1 bg-zinc-900">
+    <SafeAreaView className="flex-1 bg-zinc-900">
       <Image source={images.bg} className="absolute w-full h-full" />
 
       <ScrollView
@@ -100,13 +109,31 @@ const Index = () => {
           className="w-auto h-auto mt-20 mb-5 mx-auto"
         />
 
-        {movieLoading ? (
+        {movieLoading || trendingLoading ? (
           <ActivityIndicator size="large" color="#00f" className="mt-10" />
-        ) : movieError ? (
-          <Text className="text-red-500 text-center">Error: {movieError}</Text>
+        ) : movieError || trendingError ? (
+          <Text className="text-red-500 text-center">
+            Error: {movieError || trendingError}
+          </Text>
         ) : (
           <View className="flex-1 mt-5">
-            <SearchBar placeholder="Search for a movie" />
+            <SearchBar placeholder="Search for a movie" value="" />
+
+            {trendngMovies && (
+              <View className="mt-10">
+                <Text className="text-white font-bold text-lg mb-3">
+                  Trending Movies
+                </Text>
+                <FlatList
+                  data={trendngMovies}
+                  keyExtractor={(items) => items.id?.toString()}
+                  renderItem={({item, index}) => <TrendingCard movie={item} index={index} />}
+                  horizontal
+                  className="mb-4 mt-3"
+                  ItemSeparatorComponent={() => <View className="w-4"/>}
+                />
+              </View>
+            )}
 
             <Categories selected={selected} setSelected={setSelected} />
 
@@ -131,7 +158,7 @@ const Index = () => {
           </View>
         )}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 
