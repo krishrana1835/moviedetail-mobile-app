@@ -1,14 +1,9 @@
 import { StyleSheet, TextInput, View, Image } from 'react-native';
 import React from 'react';
 import { icons } from '@/constants/icons';
-import { useRouter } from 'expo-router'; // ✅ Correct import for expo-router
+import { useRouter } from 'expo-router';
 
-interface Props{
-    placeholder: string;
-    onPress?: () => void;
-}
-
-const SearchBar = ({placeholder, onPress}: any) => {
+const SearchBar = ({placeholder, onPress, value, onChangeText}: any) => {
   const router = useRouter();
 
   return (
@@ -21,11 +16,11 @@ const SearchBar = ({placeholder, onPress}: any) => {
       />
       <TextInput
         placeholder={placeholder}
-        onPress={onPress}
-        onChangeText={() => {}}
+        value={value}
+        onChangeText={onChangeText}
         placeholderTextColor="#888"
         className="flex-1 ml-2 text-white rounded-full border border-gray-400 pl-5"
-        onFocus={() => router.push('/search')} // ✅ Better than onPressIn
+        onFocus={() => router.push('/search')}
       />
     </View>
   );

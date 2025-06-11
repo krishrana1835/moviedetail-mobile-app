@@ -13,9 +13,10 @@ interface Props {
 }
 
 const MovieCard = ({ movie }: Props) => {
+  if (!movie) return null;
 
   return (
-    <Link href={`./movie/${movie.id}`} asChild>
+    <Link href={`../movies/`} asChild>
       <TouchableOpacity className="w-[30%]">
         <Image
           source={{
@@ -26,13 +27,17 @@ const MovieCard = ({ movie }: Props) => {
           className="w-full h-52 rounded-lg"
           resizeMode="cover"
         />
-        <Text className="text-white text-sm font-bold mt-2" numberOfLines={1}>{movie.title}</Text>
+        <Text className="text-white text-sm font-bold mt-2" numberOfLines={1}>
+          {movie.title ?? 'Untitled'}
+        </Text>
         <View className="flex-row items-center justify-start gap-x-1">
             <Image source={icons.star} className="size-4" />
             <Text className="text-xs text-white font-bold uppercase">{Math.round(movie.vote_average/2)}</Text>
+            
         </View>
-        <Text className="text-xs font-medium justify-end" style={{color: '#777'}}>{movie.release_date?.split('-')[0]}</Text>
-            {/* <Text className="text-xs text-white font-medium uppercase">Movie</Text> */}
+        <Text className="text-xs font-medium justify-end" style={{ color: '#777' }}>
+          {movie.release_date?.split('-')[0] ?? 'N/A'}
+        </Text>
       </TouchableOpacity>
     </Link>
   );
