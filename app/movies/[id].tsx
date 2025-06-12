@@ -92,9 +92,24 @@ const MovieDetails = () => {
               </Text>
             </View>
 
+            <View className="flex flex-row justify-center items-center w-full">
+              <TouchableOpacity
+                className={`${trailer?"w-[50%]":"w-full"} mt-5 mr-2 bg-blue-950 rounded-lg py-3.5 flex flex-row items-center justify-center`}
+                onPress={() =>
+                  Linking.openURL(
+                    `https://www.youtube.com/watch?v=${trailer.key}`
+                  )
+                }
+              >
+                <Image source={icons.save} className="size-5 mr-3" />
+                <Text className="text-white font-bold opacity-100">
+                  Save
+                </Text>
+              </TouchableOpacity>
+
             {trailer && (
               <TouchableOpacity
-                className="w-full mt-5 bg-blue-950 rounded-lg py-3.5 flex flex-row items-center justify-center"
+                className="w-[50%] mr-2 mt-5 bg-blue-950 rounded-lg py-3.5 flex flex-row items-center justify-center"
                 onPress={() =>
                   Linking.openURL(
                     `https://www.youtube.com/watch?v=${trailer.key}`
@@ -107,6 +122,7 @@ const MovieDetails = () => {
                 </Text>
               </TouchableOpacity>
             )}
+            </View>
 
             <MovieInfo label="Over+view" value={movie.overview} />
             <MovieInfo

@@ -7,6 +7,7 @@ import {
 import React from "react";
 import { Link } from "expo-router";
 import { icons } from "@/constants/icons";
+import { images } from "@/constants/images";
 
 interface Props {
   movie: Movie;
@@ -15,30 +16,44 @@ interface Props {
 const MovieCard = ({ movie }: Props) => {
   if (!movie) return null;
 
+  const handleSave = () => {
+    
+  }
+
   return (
-    <Link href={`/movies/${movie.id}`} asChild>
-      <TouchableOpacity className="w-[30%]">
-        <Image
-          source={{
-            uri: movie.poster_path
-              ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-              : `http://placehold.co/400x400/1a1a1a/ffffff.png`,
-          }}
-          className="w-full h-52 rounded-lg"
-          resizeMode="cover"
-        />
-        <Text className="text-white text-sm font-bold mt-2" numberOfLines={1}>
-          {movie.title ?? 'Untitled'}
-        </Text>
-        <View className="flex-row items-center justify-start gap-x-1">
-            <Image source={icons.star} className="size-4" />
-            <Text className="text-xs text-white font-bold uppercase">{Math.round(movie.vote_average)}</Text>
-        </View>
-        <Text className="text-xs font-medium justify-end" style={{ color: '#777' }}>
-          {movie.release_date?.split('-')[0] ?? 'N/A'}
-        </Text>
+    <View className="w-[30%] relative">
+      {/* Save Icon */}
+      <TouchableOpacity className="absolute top-1 right-1 z-50 bg-zinc-900 rounded-full p-1 opacity-50" onPress={handleSave}>
+        <Image source={icons.save} className="w-5 h-5" />
       </TouchableOpacity>
-    </Link>
+
+      {/* Card Content Link */}
+      <Link href={`/movies/${movie.id}`} asChild>
+        <TouchableOpacity className="pb-2">
+          <Image
+            source={{
+              uri: movie.poster_path
+                ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                : `http://placehold.co/400x400/1a1a1a/ffffff.png`,
+            }}
+            className="w-full h-52 rounded-lg"
+            resizeMode="cover"
+          />
+          <Text className="text-white text-sm font-bold mt-2" numberOfLines={1}>
+            {movie.title ?? 'Untitled'}
+          </Text>
+          <View className="flex-row items-center space-x-1 mt-1">
+            <Image source={icons.star} className="w-4 h-4" />
+            <Text className="text-xs text-white font-bold uppercase">
+              {Math.round(movie.vote_average)}
+            </Text>
+          </View>
+          <Text className="text-xs font-medium text-gray-400">
+            {movie.release_date?.split('-')[0] ?? 'N/A'}
+          </Text>
+        </TouchableOpacity>
+      </Link>
+    </View>
   );
 };
 
