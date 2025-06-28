@@ -48,6 +48,7 @@ const Categories = ({ selected, setSelected }: any) => {
               styles.categoryText,
               selected === item && styles.selectedText,
             ]}
+            className="text-sm"
           >
             {item}
           </Text>
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     color: "#999",
-    fontSize: 14,
+    fontSize: 12,
   },
   selectedText: {
     color: "#000",

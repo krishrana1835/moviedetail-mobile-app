@@ -5,6 +5,8 @@ export default function RootLayout() {
   return <Stack >
     <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
     <Stack.Screen name="movies/[id]" options={{headerShown: false}}/>
+    <Stack.Screen name="Login/signup" options={{headerShown: false}}/>
+    <Stack.Screen name="Login/Login" options={{headerShown: false}}/>
   </Stack>;
 }
  
