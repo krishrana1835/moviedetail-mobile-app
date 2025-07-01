@@ -245,3 +245,9 @@ export const changePassword = async (email: string, password: string) => {
     return false;
   }
 }
+
+export const changeSaved = async (email: string, saved: string[]) => {
+  try{
+    const response = await fetch(`${User_URL}/api/saved/update/`)
+  }
+}

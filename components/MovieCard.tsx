@@ -1,13 +1,13 @@
-import {
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-} from "react-native";
-import React from "react";
-import { Link } from "expo-router";
+import { AppContext } from "@/app/context/AppContext";
 import { icons } from "@/constants/icons";
-import { images } from "@/constants/images";
+import { Link } from "expo-router";
+import React, { useContext } from "react";
+import {
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 interface Props {
   movie: Movie;
@@ -16,15 +16,25 @@ interface Props {
 const MovieCard = ({ movie }: Props) => {
   if (!movie) return null;
 
+  const context = useContext(AppContext)
+
+  if(!context) throw new Error('AppContext must be used within an AppProvider');
+
+  const {addItem, removeItem, isSaved} = context
+
   const handleSave = () => {
-    
+    if(isSaved(movie.id.toString())){
+      removeItem(movie.id.toString())
+    }else{
+      addItem(movie.id.toString())
+    }
   }
 
   return (
     <View className="w-[30%] relative">
       {/* Save Icon */}
       <TouchableOpacity className="absolute top-1 right-1 z-50 bg-zinc-900 rounded-full p-1 opacity-50" onPress={handleSave}>
-        <Image source={icons.save} className="w-5 h-5" />
+        <Image source={isSaved(movie.id.toString()) ? icons.saved : icons.save} className="w-5 h-5" />
       </TouchableOpacity>
 
       {/* Card Content Link */}

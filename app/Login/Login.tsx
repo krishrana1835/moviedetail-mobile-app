@@ -1,8 +1,9 @@
 import { images } from "@/constants/images";
 import { checkPassword, getUserByEmail } from "@/services/api";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { ActivityIndicator, Alert, Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { AppContext } from "../context/AppContext";
 
 type SignUpProps = {
   setSignup: (val: boolean) => void;
@@ -11,6 +12,13 @@ type SignUpProps = {
 };
 
 const Login = ({ setSignup, setLoggedin, setUserData }: SignUpProps) => {
+
+  const context = useContext(AppContext)
+
+  if(!context) throw new Error('AppContext must be used within an AppProvider');
+
+  const {setSaved, setEmailContext} = context;
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,6 +42,8 @@ const Login = ({ setSignup, setLoggedin, setUserData }: SignUpProps) => {
 
         if (userdata) {
           setUserData(userdata);
+          setSaved(userdata.saved);
+          setEmailContext(email)
           setLoggedin(true);
         } else {
           Alert.alert('Error',"User data not found.");

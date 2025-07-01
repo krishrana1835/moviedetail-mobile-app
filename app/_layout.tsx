@@ -1,12 +1,15 @@
-import { Header } from "@react-navigation/elements";
 import { Stack } from "expo-router";
+import { AppProvider } from "./context/AppContext";
 
 export default function RootLayout() {
-  return <Stack >
-    <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
-    <Stack.Screen name="movies/[id]" options={{headerShown: false}}/>
-    <Stack.Screen name="Login/signup" options={{headerShown: false}}/>
-    <Stack.Screen name="Login/Login" options={{headerShown: false}}/>
-  </Stack>;
+  return (
+    <AppProvider>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="movies/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="Login/signup" options={{ headerShown: false }} />
+        <Stack.Screen name="Login/Login" options={{ headerShown: false }} />
+      </Stack>
+    </AppProvider>
+  );
 }
- 
