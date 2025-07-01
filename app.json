@@ -4,7 +4,7 @@
     "slug": "MoviesDetailApp-Mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/icons/logo2.png",
     "scheme": "moviesdetailappmobile",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,

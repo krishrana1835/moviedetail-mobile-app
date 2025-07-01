@@ -1,63 +1,79 @@
 import { images } from "@/constants/images";
 import { changePassword } from "@/services/api";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Image,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Login from "../Login/Login";
 import SignUp from "../Login/signup";
+import { AppContext } from "../context/AppContext";
 
-interface User{
-  email?: string,
-  name?: string,
-  age?: number,
-  saved?: [string]
+interface User {
+  email?: string;
+  name?: string;
+  age?: number;
+  saved?: [string];
 }
 
 function Profile() {
+  const context = useContext(AppContext);
+
+  if (!context)
+    throw new Error("AppContext must be used within an AppProvider");
+
+  const { setEmailContext, setSaved } = context;
+
   const [isLoggedin, setLoggedin] = useState(false);
   const [signupPage, setSignup] = useState(false);
   const [userData, setUserData] = useState<User>({});
-  const [password, setPassword] = useState('')
-  const [confirm, setConfirm] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {}, [signupPage]);
 
   const handleChangePass = async () => {
-    try{
-      setLoading(true)
-      if(password === confirm){
-      const response = await changePassword(userData.email || '' , password)
-      if(response){
-        alert('Password is changed')
-      }else{
-        alert('Error plese tyr again')
+    try {
+      setLoading(true);
+      if (password === confirm) {
+        const response = await changePassword(userData.email || "", password);
+        if (response) {
+          alert("Password is changed");
+        } else {
+          alert("Error plese tyr again");
+        }
+      } else {
+        alert("Password don't match");
       }
-    }else{
-      alert('Password don\'t match')
+    } catch (error) {
+      alert("Server error please try again later.");
+    } finally {
+      setLoading(false);
     }
-    }catch(error){
-      alert('Server error please try again later.')
-    }finally{
-      setLoading(false)
-    }
-  }
+  };
 
   return (
     <View className="flex-1 bg-[#070529]">
       {/* Background image */}
-      <Image source={images.bg} className="absolute w-full h-full" resizeMode="cover" />
+      <Image
+        source={images.bg}
+        className="absolute w-full h-full"
+        resizeMode="cover"
+      />
 
       {!isLoggedin ? (
         !signupPage ? (
-          <Login setSignup={setSignup} setLoggedin={setLoggedin} setUserData={setUserData} />
+          <Login
+            setSignup={setSignup}
+            setLoggedin={setLoggedin}
+            setUserData={setUserData}
+          />
         ) : (
           <SignUp setSignup={setSignup} />
         )
@@ -75,7 +91,9 @@ function Profile() {
               </View>
 
               {/* Heading */}
-              <Text className="text-white text-2xl font-bold mb-2">Welcome, {userData.name}!</Text>
+              <Text className="text-white text-2xl font-bold mb-2">
+                Welcome, {userData.name}!
+              </Text>
 
               {/* Email */}
               <Text className="text-white text-base mb-6 opacity-80">
@@ -87,7 +105,7 @@ function Profile() {
               <Text className="text-white text-lg font-semibold mb-4 text-center">
                 Change Password
               </Text>
- 
+
               <TextInput
                 placeholder="New Password"
                 placeholderTextColor="#ccc"
@@ -107,18 +125,30 @@ function Profile() {
                 onChangeText={(text) => setConfirm(text)}
               />
 
-              <TouchableOpacity className="bg-purple-600 py-3 rounded-full" onPress={handleChangePass} >
-                <Text className="text-center text-white font-bold">{loading ? "Updating..." : "Update Password"}</Text>
+              <TouchableOpacity
+                className="bg-purple-600 py-3 rounded-full"
+                onPress={handleChangePass}
+              >
+                <Text className="text-center text-white font-bold">
+                  {loading ? "Updating..." : "Update Password"}
+                </Text>
               </TouchableOpacity>
             </View>
 
             <View className="bg-white/10 p-5 rounded-xl mt-3">
-              <TouchableOpacity className="bg-red-600 py-3 rounded-full" onPress={() => {
-                setLoggedin(false)
-                setPassword('')
-                setConfirm('')
-              }}>
-                <Text className="text-center text-white font-bold">Log out</Text>
+              <TouchableOpacity
+                className="bg-red-600 py-3 rounded-full"
+                onPress={() => {
+                  setPassword("");
+                  setConfirm("");
+                  setEmailContext("");
+                  setSaved([]);
+                  setLoggedin(false);
+                }}
+              >
+                <Text className="text-center text-white font-bold">
+                  Log out
+                </Text>
               </TouchableOpacity>
             </View>
           </ScrollView>

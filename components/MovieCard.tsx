@@ -3,6 +3,7 @@ import { icons } from "@/constants/icons";
 import { Link } from "expo-router";
 import React, { useContext } from "react";
 import {
+  Alert,
   Image,
   Text,
   TouchableOpacity,
@@ -20,13 +21,17 @@ const MovieCard = ({ movie }: Props) => {
 
   if(!context) throw new Error('AppContext must be used within an AppProvider');
 
-  const {addItem, removeItem, isSaved} = context
+  const {email, addItem, removeItem, isSaved} = context
 
   const handleSave = () => {
-    if(isSaved(movie.id.toString())){
+    if(email.trim()){
+      if(isSaved(movie.id.toString())){
       removeItem(movie.id.toString())
     }else{
       addItem(movie.id.toString())
+    }
+    }else{
+      Alert.alert('Login', 'Please Login.')
     }
   }
 

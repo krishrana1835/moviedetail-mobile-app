@@ -147,6 +147,22 @@ export const fetchMovieTrailers = async (movieId: string) => {
   }
 };
 
+export const getMovieDetails = async (movieId: string) => {
+  try {
+    const response = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&language=en-US`);
+
+    if (!response.ok) {
+      throw new Error(`TMDB error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching movie details:', error);
+    return null;
+  }
+};
+
 export const checkPassword = async (email: string, password: string) => {
   try {
     const response = await fetch(`${User_URL}/api/password/check`, {
@@ -248,6 +264,20 @@ export const changePassword = async (email: string, password: string) => {
 
 export const changeSaved = async (email: string, saved: string[]) => {
   try{
-    const response = await fetch(`${User_URL}/api/saved/update/`)
+    const response = await fetch(`${User_URL}/api/saved/update/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({email, saved}),
+    })
+
+    if(response.ok){
+      return true
+    }else{
+      return false
+    }
+  }catch(error){
+    console.log("error in saved api", error)
   }
 }

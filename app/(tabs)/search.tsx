@@ -39,7 +39,7 @@ const search = () => {
   }, [searchQuery]);
 
   return (
-    <SafeAreaView className="flex-row justify-center items-center flex-wrap bg-zinc-900 h-full">
+    <SafeAreaView className="flex-row justify-center items-center flex-wrap bg-[#070529] h-full">
       <Image source={images.bg} className="w-full h-full absolute top-0 left-0" />
 
       <FlatList

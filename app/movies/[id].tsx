@@ -6,8 +6,9 @@ import {
   Image,
   TouchableOpacity,
   Linking,
+  Alert,
 } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import useFetch from "@/services/useFetch";
 import search from "../(tabs)/search";
@@ -16,6 +17,7 @@ import { icons } from "@/constants/icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "@/constants/images";
 import { navigate } from "expo-router/build/global-state/routing";
+import { AppContext } from "../context/AppContext";
 
 interface Props {
   label: string;
@@ -38,6 +40,13 @@ const MovieInfo = ({ label, value }: Props) => {
 const MovieDetails = () => {
   const { id } = useLocalSearchParams();
 
+  const context = useContext(AppContext);
+
+  if (!context)
+    throw new Error("AppContext must be used within an AppProvider");
+
+  const { email, addItem, removeItem, isSaved } = context;
+
   const { data: movie, loading } = useFetch(
     () => fetchMovieDetails(id.toString()),
     true
@@ -51,6 +60,18 @@ const MovieDetails = () => {
   const trailer = movieTrailers?.find(
     (video: any) => video.type === "Trailer" && video.site === "YouTube"
   );
+
+  const handleSave = () => {
+    if (email.trim()) {
+      if (isSaved(id.toString())) {
+        removeItem(id.toString());
+      } else {
+        addItem(id.toString());
+      }
+    } else {
+      Alert.alert("Login", "Please Login.");
+    }
+  };
 
   return (
     <SafeAreaView className="flex-1" style={{ backgroundColor: "#070529" }}>
@@ -94,37 +115,33 @@ const MovieDetails = () => {
 
             <View className="flex flex-row justify-center items-center w-full">
               <TouchableOpacity
-                className={`${trailer?"w-[50%]":"w-full"} mt-5 mr-2 bg-blue-950 rounded-lg py-3.5 flex flex-row items-center justify-center`}
-                onPress={() =>
-                  Linking.openURL(
-                    `https://www.youtube.com/watch?v=${trailer.key}`
-                  )
-                }
+                className={`${
+                  trailer ? "w-[50%]" : "w-full"
+                } mt-5 mr-2 bg-blue-950 rounded-lg py-3.5 flex flex-row items-center justify-center`}
+                onPress={handleSave}
               >
-                <Image source={icons.save} className="size-5 mr-3" />
-                <Text className="text-white font-bold opacity-100">
-                  Save
-                </Text>
+                <Image source={isSaved(id.toString()) ? icons.saved : icons.save} className="size-5 mr-3" />
+                <Text className="text-white font-bold opacity-100">{isSaved(id.toString())?"Saved" : "Save"}</Text>
               </TouchableOpacity>
 
-            {trailer && (
-              <TouchableOpacity
-                className="w-[50%] mr-2 mt-5 bg-blue-950 rounded-lg py-3.5 flex flex-row items-center justify-center"
-                onPress={() =>
-                  Linking.openURL(
-                    `https://www.youtube.com/watch?v=${trailer.key}`
-                  )
-                }
-              >
-                <Image source={icons.trailer} className="size-5 mr-3" />
-                <Text className="text-white font-bold opacity-100">
-                  Watch Trailer
-                </Text>
-              </TouchableOpacity>
-            )}
+              {trailer && (
+                <TouchableOpacity
+                  className="w-[50%] mr-2 mt-5 bg-blue-950 rounded-lg py-3.5 flex flex-row items-center justify-center"
+                  onPress={() =>
+                    Linking.openURL(
+                      `https://www.youtube.com/watch?v=${trailer.key}`
+                    )
+                  }
+                >
+                  <Image source={icons.trailer} className="size-5 mr-3" />
+                  <Text className="text-white font-bold opacity-100">
+                    Watch Trailer
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
 
-            <MovieInfo label="Over+view" value={movie.overview} />
+            <MovieInfo label="Overview" value={movie.overview} />
             <MovieInfo
               label="Genres"
               value={movie.genres.map((g) => g.name).join("-") || "N/A"}

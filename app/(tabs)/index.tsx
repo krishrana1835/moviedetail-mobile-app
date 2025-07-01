@@ -97,7 +97,7 @@ const Index = () => {
   }, [selected]);
 
   return (
-    <SafeAreaView className="flex-1 bg-zinc-900">
+    <SafeAreaView className="flex-1 bg-[#070529]">
       <Image source={images.bg} className="absolute w-full h-full" />
 
       <ScrollView
@@ -111,7 +111,7 @@ const Index = () => {
         />
 
         <View className="flex-1">
-          <SearchBar placeholder="Search for a movie" value="" />
+          {/* <SearchBar placeholder="Search for a movie" value="" /> */}
 
           {trendingLoading ? (
             <ActivityIndicator size="large" color="#00f" className="mt-10" />
